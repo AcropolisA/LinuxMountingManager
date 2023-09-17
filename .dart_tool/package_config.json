@@ -122,6 +122,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///home/acropolis/.pub-cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///home/acropolis/.pub-cache/hosted/pub.dev/path-1.8.3",
       "packageUri": "lib/",
@@ -132,6 +138,12 @@
       "rootUri": "file:///home/acropolis/.pub-cache/hosted/pub.dev/process_run-0.13.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "provider",
+      "rootUri": "file:///home/acropolis/.pub-cache/hosted/pub.dev/provider-6.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "pub_semver",
@@ -224,7 +236,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2023-09-10T11:08:25.339862Z",
+  "generated": "2023-09-11T13:43:34.115876Z",
   "generator": "pub",
   "generatorVersion": "3.1.1"
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -30,30 +31,39 @@ class ManagerHomeController extends GetxController {
   changeMode() => addMode.value = !addMode.value;
 }
 
-// ignore: must_be_immutable
-class ManagerHome extends ConsumerWidget {
-  ManagerHome({super.key});
+class MountingListState extends StateNotifier<List<Map<String, Object>>> {
+  MountingListState() : super(const []);
 
-  List<Map<String, String>> mountingList = [
-    {'Path': '\\smb\\1\\data'},
-    {'Path': '\\smb\\2\\data'},
-    {'Path': '\\smb\\3\\data'},
-    {'Path': '\\smb\\4\\data'},
-    {'Path': '\\smb\\5\\data'},
-    {'Path': '\\smb\\6\\data'},
-    {'Path': '\\smb\\7\\data'},
-    {'Path': '\\smb\\8\\data'},
-    {'Path': '\\smb\\9\\data'},
-    {'Path': '\\smb\\10\\data'},
-    {'Path': '\\smb\\11\\data'},
-    {'Path': '\\smb\\12\\data'},
-    {'Path': '\\smb\\13\\data'},
-    {'Path': '\\smb\\14\\data'},
-  ];
+  static final provider =
+      StateNotifierProvider<MountingListState, List<Map<String, Object>>>(
+          (_) => MountingListState());
+}
+
+// ignore: must_be_immutable
+class ManagerHome extends HookConsumerWidget {
+  const ManagerHome({super.key});
+
+  // List<Map<String, String>> mountingList = [
+  //   {'Path': '\\smb\\1\\data'},
+  //   {'Path': '\\smb\\2\\data'},
+  //   {'Path': '\\smb\\3\\data'},
+  //   {'Path': '\\smb\\4\\data'},
+  //   {'Path': '\\smb\\5\\data'},
+  //   {'Path': '\\smb\\6\\data'},
+  //   {'Path': '\\smb\\7\\data'},
+  //   {'Path': '\\smb\\8\\data'},
+  //   {'Path': '\\smb\\9\\data'},
+  //   {'Path': '\\smb\\10\\data'},
+  //   {'Path': '\\smb\\11\\data'},
+  //   {'Path': '\\smb\\12\\data'},
+  //   {'Path': '\\smb\\13\\data'},
+  //   {'Path': '\\smb\\14\\data'},
+  // ];
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ManagerHomeController con = Get.put(ManagerHomeController());
+    final mountingList = useState(MountingListState.provider);
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -110,15 +120,19 @@ class ManagerHome extends ConsumerWidget {
               ),
               Expanded(
                 flex: 1,
-                child: ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text((mountingList[index]['Path'].toString())),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: mountingList.length),
+                child: HookConsumer(
+                  builder: (context, ref, _) {
+                    final mountingList = ref.watch(MountingListState.provider);
+
+                    return ListView.separated(
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          return Text(mountingList[index].toString());
+                        },
+                        separatorBuilder: (context, index) => const Divider(),
+                        itemCount: mountingList.length);
+                  },
+                ),
               ),
             ],
           ),

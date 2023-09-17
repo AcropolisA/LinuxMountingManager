@@ -70,6 +70,10 @@ meta
 2.12
 file:///home/acropolis/.pub-cache/hosted/pub.dev/meta-1.9.1/
 file:///home/acropolis/.pub-cache/hosted/pub.dev/meta-1.9.1/lib/
+nested
+2.12
+file:///home/acropolis/.pub-cache/hosted/pub.dev/nested-1.0.0/
+file:///home/acropolis/.pub-cache/hosted/pub.dev/nested-1.0.0/lib/
 path
 2.12
 file:///home/acropolis/.pub-cache/hosted/pub.dev/path-1.8.3/
@@ -78,6 +82,10 @@ process_run
 3.0
 file:///home/acropolis/.pub-cache/hosted/pub.dev/process_run-0.13.1/
 file:///home/acropolis/.pub-cache/hosted/pub.dev/process_run-0.13.1/lib/
+provider
+2.12
+file:///home/acropolis/.pub-cache/hosted/pub.dev/provider-6.0.5/
+file:///home/acropolis/.pub-cache/hosted/pub.dev/provider-6.0.5/lib/
 pub_semver
 2.17
 file:///home/acropolis/.pub-cache/hosted/pub.dev/pub_semver-2.1.4/

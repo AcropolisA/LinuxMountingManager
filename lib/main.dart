@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ManagerHome(),
+      home: const ManagerHome(),
     );
   }
 }
@@ -91,6 +91,15 @@ class ManagerHome extends HookConsumerWidget {
             ),
           )
         ],
+      ),
+      drawer: const Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Text('Drawer'),
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Center(

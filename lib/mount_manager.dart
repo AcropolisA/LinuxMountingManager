@@ -1,6 +1,8 @@
 import 'dart:io';
 
-class MountMaanage {
+class MountManager {
+  Future<void> readfstab() async {}
+
   Future<void> mountExample() async {
     final remoteAddress = '//nas.xxx.com/backup';
     final mountPoint = '/mnt/nas_server';

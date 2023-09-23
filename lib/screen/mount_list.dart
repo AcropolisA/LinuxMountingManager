@@ -42,7 +42,7 @@ class ManagerHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ManagerHomeController con = Get.put(ManagerHomeController());
-
+    RouteController().setRoute = ModalRoute.of(context)?.settings.name ?? '/';
     return Scaffold(
       appBar: AppBar(
         leading: Builder(

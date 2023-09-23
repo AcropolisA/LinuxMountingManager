@@ -8,6 +8,8 @@ class Setting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SettingController con = Get.put(SettingController());
+    RouteController().setRoute =
+        ModalRoute.of(context)?.settings.name ?? '/setting';
     return Scaffold(
       appBar: AppBar(
         leading: Builder(

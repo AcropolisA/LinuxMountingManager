@@ -1,5 +1,20 @@
 import 'package:flutter/material.dart';
 
+class RouteController {
+  static final RouteController _instance = RouteController._internal();
+
+  RouteController._internal();
+
+  factory RouteController() {
+    return _instance;
+  }
+
+  String _route = "";
+
+  get getRoute => _route;
+  set setRoute(String route) => _route = route;
+}
+
 class MountManagerDrawer extends StatelessWidget {
   const MountManagerDrawer({super.key});
 
@@ -15,6 +30,9 @@ class MountManagerDrawer extends StatelessWidget {
         'route': '/setting',
       },
     ];
+
+    RouteController routeController = RouteController();
+
     return Drawer(
       child: Column(
         children: [
@@ -45,13 +63,11 @@ class MountManagerDrawer extends StatelessWidget {
                     style: const TextStyle(fontSize: 20),
                   ),
                   onTap: () {
-                    print(ModalRoute.of(context)?.settings.name);
-                    if (ModalRoute.of(context)?.settings.name ==
-                        selected['route']) {
-                      // 현재 화면이 선택된 메뉴와 동일하다면 Drawer만 닫기
+                    print(routeController.getRoute);
+                    if (routeController.getRoute == selected['route']) {
                       Navigator.of(context).pop();
                     } else {
-                      // 선택된 메뉴의 화면으로 이동
+                      routeController.setRoute = selected['route'].toString();
                       Navigator.pushReplacementNamed(
                           context, selected['route'].toString());
                     }

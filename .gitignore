@@ -1,3 +1,7 @@
 build/
 .dart_tool/
 .vscode/
+windows/
+idea/
+test/
+fvm/

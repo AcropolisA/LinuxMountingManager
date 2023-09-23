@@ -4,10 +4,10 @@ class MountManager {
   Future<void> readfstab() async {}
 
   Future<void> mountExample() async {
-    final remoteAddress = '//nas.xxx.com/backup';
-    final mountPoint = '/mnt/nas_server';
-    final username = 'kei';
-    final password = 'smbnas';
+    const remoteAddress = '//nas.xxx.com/backup';
+    const mountPoint = '/mnt/nas_server';
+    const username = 'kei';
+    const password = 'smbnas';
 
     stdout.write(
         'Do you really want to mount $remoteAddress to $mountPoint with the given username and password? (yes/no): ');
@@ -27,7 +27,7 @@ class MountManager {
       if (mountResult.exitCode == 0) {
         print('Successfully mounted $remoteAddress to $mountPoint.');
 
-        final fstabLine =
+        const fstabLine =
             '$remoteAddress $mountPoint cifs username=$username,password=$password 0 0\n';
 
         await File('temp_fstab')

@@ -14,6 +14,10 @@ struct _MyApplication {
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
+
+g_signal_connect(window, "delete-event", G_CALLBACK(on_delete_event), NULL);
+
+
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
@@ -79,6 +83,18 @@ static gboolean my_application_local_command_line(GApplication* application, gch
   *exit_status = 0;
 
   return TRUE;
+}
+
+static gboolean on_delete_event(GtkWidget *widget, GdkEvent *event, gpointer data) {
+    GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "정말로 종료하시겠습니까?");
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    
+    if (result == GTK_RESPONSE_YES) {
+        return FALSE;  // Allow the window to be closed
+    } else {
+        return TRUE;  // Prevent the window from being closed
+    }
 }
 
 // Implements GObject::dispose.

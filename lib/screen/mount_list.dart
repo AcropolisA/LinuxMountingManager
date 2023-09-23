@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:linux_mounting_manager/dialog.dart';
+import 'package:linux_mounting_manager/popup/dialog.dart';
+import 'package:linux_mounting_manager/popup/mount_manager_drawer.dart';
 
 class ManagerHomeController extends GetxController {
   RxBool addMode = false.obs;
@@ -70,15 +71,7 @@ class ManagerHome extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(
-              child: Text('Drawer'),
-            ),
-          ],
-        ),
-      ),
+      drawer: const MountManagerDrawer(),
       body: SafeArea(
         child: Center(
           child: Column(

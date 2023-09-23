@@ -38,6 +38,8 @@ Future<void> addMountPathPopup(BuildContext context) async {
 Future<void> addMountPathPopupDialog(BuildContext context) async {
   final width = MediaQuery.of(context).size.width * .05 / 2;
   final height = MediaQuery.of(context).size.height * .05 / 2;
+  const titleSize = 28.0;
+  const buttonSize = 20.0;
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -55,9 +57,13 @@ Future<void> addMountPathPopupDialog(BuildContext context) async {
                   top: height,
                   bottom: height,
                 ),
-                child: const Text('Add Mount Path'),
+                child: const Text(
+                  'Add Mount Path',
+                  style: TextStyle(fontSize: titleSize),
+                ),
               ),
             ),
+            const Divider(),
             const Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -66,6 +72,7 @@ Future<void> addMountPathPopupDialog(BuildContext context) async {
                 children: [],
               ),
             ),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.only(
                 left: width,
@@ -80,13 +87,19 @@ Future<void> addMountPathPopupDialog(BuildContext context) async {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Close'),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(fontSize: buttonSize),
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Confirm'),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(fontSize: buttonSize),
+                    ),
                   ),
                 ],
               ),

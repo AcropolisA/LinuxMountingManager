@@ -1,7 +1,68 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
+class FstabEntry {
+  final String fileSystem;
+  final String mountPoint;
+  final String type;
+  final String options;
+  final int dump;
+  final int pass;
+
+  FstabEntry(this.fileSystem, this.mountPoint, this.type, this.options,
+      this.dump, this.pass);
+
+  @override
+  String toString() {
+    return '$fileSystem $mountPoint $type $options $dump $pass';
+  }
+}
+
 class MountManager {
-  Future<void> readfstab() async {}
+  Future<void> readfstab() async {
+    List<FstabEntry> parseFstab(String content) {
+      var entries = <FstabEntry>[];
+
+      for (var line in content.split('\n')) {
+        line = line.trim();
+        if (line.isEmpty || line.startsWith('#')) continue; // 주석 또는 빈 라인 제외
+
+        var parts = line.split(RegExp(r'\s+'));
+        if (parts.length != 6) continue; // 유효하지 않은 엔트리 제외
+
+        // # This code parses all path
+        // entries.add(FstabEntry(parts[0], parts[1], parts[2], parts[3],
+        //     int.parse(parts[4]), int.parse(parts[5])));
+
+        // # parse only /mnt/~~
+        var mountPoint = parts[1];
+        if (!mountPoint.startsWith('/mnt/')) {
+          continue; // '/mnt/{PATH}' 형식이 아닌 마운트 포인트 제외
+        }
+
+        entries.add(FstabEntry(parts[0], mountPoint, parts[2], parts[3],
+            int.parse(parts[4]), int.parse(parts[5])));
+      }
+
+      return entries;
+    }
+
+    try {
+      var fstabContent = File('/etc/fstab').readAsStringSync();
+      var entries = parseFstab(fstabContent);
+
+      for (var entry in entries) {
+        if (kDebugMode) {
+          print(entry);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error reading or parsing fstab: $e');
+      }
+    }
+  }
 
   Future<void> mountExample() async {
     const remoteAddress = '//nas.xxx.com/backup';
@@ -25,7 +86,9 @@ class MountManager {
       ]);
 
       if (mountResult.exitCode == 0) {
-        print('Successfully mounted $remoteAddress to $mountPoint.');
+        if (kDebugMode) {
+          print('Successfully mounted $remoteAddress to $mountPoint.');
+        }
 
         const fstabLine =
             '$remoteAddress $mountPoint cifs username=$username,password=$password 0 0\n';
@@ -37,17 +100,27 @@ class MountManager {
             await Process.run('sudo', ['cp', 'temp_fstab', '/etc/fstab']);
 
         if (cpResult.exitCode == 0) {
-          print('Successfully updated /etc/fstab.');
+          if (kDebugMode) {
+            print('Successfully updated /etc/fstab.');
+          }
         } else {
-          print('Failed to update /etc/fstab.');
-          print('Error: ${cpResult.stderr}');
+          if (kDebugMode) {
+            print('Failed to update /etc/fstab.');
+          }
+          if (kDebugMode) {
+            print('Error: ${cpResult.stderr}');
+          }
         }
       } else {
-        print('Failed to mount the device.');
-        print('Error: ${mountResult.stderr}');
+        if (kDebugMode) {
+          print('Failed to mount the device.');
+          print('Error: ${mountResult.stderr}');
+        }
       }
     } else {
-      print('Mount operation cancelled.');
+      if (kDebugMode) {
+        print('Mount operation cancelled.');
+      }
     }
   }
 }

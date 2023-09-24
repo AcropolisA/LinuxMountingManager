@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linux_mounting_manager/popup/mount_manager_drawer.dart';
@@ -36,6 +37,8 @@ class SettingController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print('SettingController has been closed');
+    if (kDebugMode) {
+      print('SettingController has been closed');
+    }
   }
 }

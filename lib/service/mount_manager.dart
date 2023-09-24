@@ -19,49 +19,70 @@ class FstabEntry {
   }
 }
 
-class MountManager {
-  Future<void> readfstab() async {
-    List<FstabEntry> parseFstab(String content) {
-      var entries = <FstabEntry>[];
+class MountManager extends ChangeNotifier {
+  static final MountManager _instance = MountManager._internal();
 
-      for (var line in content.split('\n')) {
-        line = line.trim();
-        if (line.isEmpty || line.startsWith('#')) continue; // 주석 또는 빈 라인 제외
+  List<FstabEntry> _fstabList = [];
 
-        var parts = line.split(RegExp(r'\s+'));
-        if (parts.length != 6) continue; // 유효하지 않은 엔트리 제외
+  MountManager._internal();
+  factory MountManager() {
+    return _instance;
+  }
 
-        // # This code parses all path
-        // entries.add(FstabEntry(parts[0], parts[1], parts[2], parts[3],
-        //     int.parse(parts[4]), int.parse(parts[5])));
+  get getList => _fstabList;
 
-        // # parse only /mnt/~~
-        var mountPoint = parts[1];
-        if (!mountPoint.startsWith('/mnt/')) {
-          continue; // '/mnt/{PATH}' 형식이 아닌 마운트 포인트 제외
-        }
+  void addFstabEntry(FstabEntry entry) {
+    _fstabList.add(entry);
+    notifyListeners();
+  }
 
-        entries.add(FstabEntry(parts[0], mountPoint, parts[2], parts[3],
-            int.parse(parts[4]), int.parse(parts[5])));
-      }
+  List<FstabEntry> _parseFstab(String content) {
+    var entries = <FstabEntry>[];
 
-      return entries;
+    for (var line in content.split('\n')) {
+      line = line.trim();
+      if (line.isEmpty || line.startsWith('#')) continue; // 주석 또는 빈 라인 제외
+
+      var parts = line.split(RegExp(r'\s+'));
+      if (parts.length != 6) continue; // 유효하지 않은 엔트리 제외
+
+      // # This code parses all path
+      entries.add(FstabEntry(parts[0], parts[1], parts[2], parts[3],
+          int.parse(parts[4]), int.parse(parts[5])));
+
+      // # parse only /mnt/~~
+      // var mountPoint = parts[1];
+      // if (!mountPoint.startsWith('/mnt/')) {
+      //   continue; // '/mnt/{PATH}' 형식이 아닌 마운트 포인트 제외
+      // }
+
+      // entries.add(FstabEntry(parts[0], mountPoint, parts[2], parts[3],
+      //     int.parse(parts[4]), int.parse(parts[5])));
     }
 
+    return entries;
+  }
+
+  Future<List<FstabEntry>> readfstab() async {
     try {
       var fstabContent = File('/etc/fstab').readAsStringSync();
-      var entries = parseFstab(fstabContent);
+      var entries = _parseFstab(fstabContent);
+
+      _fstabList = entries;
 
       for (var entry in entries) {
         if (kDebugMode) {
           print(entry);
         }
       }
+
+      return entries;
     } catch (e) {
       if (kDebugMode) {
         print('Error reading or parsing fstab: $e');
       }
     }
+    return <FstabEntry>[];
   }
 
   Future<void> mountExample() async {

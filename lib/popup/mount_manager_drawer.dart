@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RouteController {
@@ -48,32 +49,37 @@ class MountManagerDrawer extends StatelessWidget {
               ),
             ),
           ),
-          SingleChildScrollView(
-            child: ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              separatorBuilder: (context, index) => Container(),
-              itemCount: drawerMenuList.length,
-              itemBuilder: (context, index) {
-                var selected = drawerMenuList[index];
-                return ListTile(
-                  title: Text(
-                    selected['name'].toString(),
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  onTap: () {
-                    print(routeController.getRoute);
-                    if (routeController.getRoute == selected['route']) {
-                      Navigator.of(context).pop();
-                    } else {
-                      routeController.setRoute = selected['route'].toString();
-                      Navigator.pushReplacementNamed(
-                          context, selected['route'].toString());
-                    }
-                  },
-                );
-              },
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: SingleChildScrollView(
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                separatorBuilder: (context, index) => Container(),
+                itemCount: drawerMenuList.length,
+                itemBuilder: (context, index) {
+                  var selected = drawerMenuList[index];
+                  return ListTile(
+                    title: Text(
+                      selected['name'].toString(),
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    onTap: () {
+                      if (kDebugMode) {
+                        print(routeController.getRoute);
+                      }
+                      if (routeController.getRoute == selected['route']) {
+                        Navigator.of(context).pop();
+                      } else {
+                        routeController.setRoute = selected['route'].toString();
+                        Navigator.pushReplacementNamed(
+                            context, selected['route'].toString());
+                      }
+                    },
+                  );
+                },
+              ),
             ),
           ),
           // const Spacer(),

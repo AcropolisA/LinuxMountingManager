@@ -5,7 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:linux_mounting_manager/mount_manager.dart';
+import 'package:linux_mounting_manager/service/mount_manager.dart';
 
 void main() {
   var mounter = MountManager();

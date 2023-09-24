@@ -90,6 +90,16 @@ class ManagerHome extends StatelessWidget {
                   ),
                 ],
               )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
               // Obx(
               //   () => Visibility(
               //     visible: con.addMode.value,
@@ -117,10 +127,3 @@ class ManagerHome extends StatelessWidget {
               //     },
               //   ),
               // ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

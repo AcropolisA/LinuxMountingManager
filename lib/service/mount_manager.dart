@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -19,17 +20,24 @@ class FstabEntry {
   }
 }
 
-class MountManager extends ChangeNotifier {
-  static final MountManager _instance = MountManager._internal();
+class MountManagerNotifier extends ChangeNotifier {
+  static final MountManagerNotifier _instance =
+      MountManagerNotifier._internal();
 
-  List<FstabEntry> _fstabList = [];
+  List<FstabEntry> _fstabList = <FstabEntry>[];
 
-  MountManager._internal();
-  factory MountManager() {
+  MountManagerNotifier._internal();
+
+  factory MountManagerNotifier() {
     return _instance;
   }
 
-  get getList => _fstabList;
+  Future<void> initialize() async {
+    _fstabList = await readfstab();
+    notifyListeners();
+  }
+
+  List<FstabEntry> get getList => _fstabList;
 
   void addFstabEntry(FstabEntry entry) {
     _fstabList.add(entry);
@@ -83,6 +91,41 @@ class MountManager extends ChangeNotifier {
       }
     }
     return <FstabEntry>[];
+  }
+
+  Future<void> mountFstabEntry(FstabEntry entry) async {
+    const mountCmd = 'sudo';
+    final arguments = [
+      'mount',
+      '-t',
+      entry.type,
+      '-o',
+      entry.options,
+      entry.fileSystem,
+      entry.mountPoint
+    ];
+
+    final result = await Process.run(mountCmd, arguments);
+
+    if (result.exitCode != 0) {
+      if (kDebugMode) {
+        print('Error occurred: ${result.stderr}');
+      }
+    } else {
+      if (kDebugMode) {
+        print('Successfully mounted: ${result.stdout}');
+      }
+    }
+  }
+
+  Future<bool> isMounted(FstabEntry entry) async {
+    final process = await Process.start('mount', []);
+    final mounted = await process.stdout
+        .transform(const Utf8Decoder())
+        .transform(const LineSplitter())
+        .toList();
+
+    return mounted.any((line) => line.contains(entry.mountPoint));
   }
 
   Future<void> mountExample() async {

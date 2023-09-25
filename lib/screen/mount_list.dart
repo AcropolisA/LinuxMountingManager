@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:linux_mounting_manager/popup/dialog.dart';
 import 'package:linux_mounting_manager/popup/mount_manager_drawer.dart';
+import 'package:linux_mounting_manager/service/mount_manager.dart';
 
 class ManagerHomeController extends GetxController {
   RxBool addMode = false.obs;
@@ -18,8 +19,13 @@ class MountingListState extends StateNotifier<List<Map<String, Object>>> {
           (_) => MountingListState());
 }
 
+final fstabEntryListProvider =
+    ChangeNotifierProvider<MountManagerNotifier>((ref) {
+  return MountManagerNotifier(); // MountManager._instance;
+});
+
 // ignore: must_be_immutable
-class ManagerHome extends StatelessWidget {
+class ManagerHome extends ConsumerWidget {
   const ManagerHome({super.key});
 
   // List<Map<String, String>> mountingList = [
@@ -40,8 +46,11 @@ class ManagerHome extends StatelessWidget {
   // ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ManagerHomeController con = Get.put(ManagerHomeController());
+    final manager = ref.watch(fstabEntryListProvider);
+    final fstabEntries = manager.getList;
+
     RouteController().setRoute = ModalRoute.of(context)?.settings.name ?? '/';
     return Scaffold(
       appBar: AppBar(
@@ -72,26 +81,59 @@ class ManagerHome extends StatelessWidget {
         ],
       ),
       drawer: const MountManagerDrawer(),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SingleChildScrollView(
-                  child: Column(
-                children: [
-                  Expanded(
-                    flex: 0,
-                    child: Obx(
-                      () => Text(con.addMode.value ? 'ADD' : 'LIST'),
-                    ),
-                  ),
-                ],
-              )),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: ListView.builder(
+                itemCount: fstabEntries.length,
+                itemBuilder: (context, index) {
+                  final entry = fstabEntries[index];
+                  return FutureBuilder<bool>(
+                    future: MountManagerNotifier().isMounted(entry),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // 비동기 작업이 아직 완료되지 않았을 때 보여줄 위젯 (예: 로딩 인디케이터)
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        // 오류가 발생했을 때의 처리 (예: 오류 메시지 표시)
+                        return ListTile(
+                            title: Text('Error: ${snapshot.error}'));
+                      }
+                      // 데이터가 준비되었을 때의 ListTile
+                      bool isMounted = snapshot.data ?? false;
+                      return ListTile(
+                        title: Text(entry.mountPoint),
+                        subtitle: Text(entry.options),
+                        trailing: Switch(
+                          value: isMounted, // 비동기적으로 가져온 데이터를 여기서 사용
+                          onChanged: (check) {},
+                        ),
+                        onTap: () {},
+                        onLongPress: () {},
+                        // onFocusChange에 대해서는 ListTile에 해당 속성이 없기 때문에 다른 방법을 고려해야 합니다.
+                      );
+                    },
+                  );
+                },
+                //     Column(
+                //   children: [
+                //     Expanded(
+                //       flex: 0,
+                //       child: Obx(
+                //         () => Text(con.addMode.value ? 'ADD' : 'LIST'),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linux_mounting_manager/screen/mount_list.dart';
 import 'package:linux_mounting_manager/screen/setting.dart';
+import 'package:linux_mounting_manager/service/mount_manager.dart';
 
-void main() {
+void main() async {
+  await MountManagerNotifier().initialize();
+
   runApp(
     const ProviderScope(
       child: MyApp(),
